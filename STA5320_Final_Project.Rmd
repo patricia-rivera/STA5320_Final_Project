@@ -8,24 +8,87 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
 ```
 
-## R Markdown
+```{r}
+attach(red_wine)
+attach(white_wine)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# for convenience, make shorter variable names:
+names(red_wine) <- c("fa","va","ca","rs","chl","fsd","tsd","den","ph","sul","alc","qual")
+names(white_wine) <- names(red_wine)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+head(white_wine)
 ```
 
-## Including Plots
+```{r}
+# --------- EXPLORATORY DATA ANALYSIS ------------
 
-You can also embed plots, for example:
+# variable 1: fixed acidity (fa)
+summary(red_wine$fa)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+ggplot(data = red_wine, aes(fa)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of fixed acidity in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+qqnorm(red_wine$fa)
+qqline(red_wine$fa)
+
+
+# variable 2: volatile acidity (va)
+summary(red_wine$va)
+
+ggplot(data = red_wine, aes(va)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of volatile acidity in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+qqnorm(red_wine$va)
+qqline(red_wine$va)
+
+
+# Variable 3: citric acid (ca)
+summary(red_wine$ca)
+
+ggplot(data = red_wine, aes(ca)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of citric acid in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+
+# variable 4: residual sugar (rs)
+summary(red_wine$rs)
+
+ggplot(data = red_wine, aes(rs)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of residual sugar in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+# variable 5: chlorides (chl)
+summary(red_wine$chl)
+
+ggplot(data = red_wine, aes(chl)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of citric acid in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+# variable 6: free sulfur dioxide (fsd)
+summary(red_wine$fsd)
+
+ggplot(data = red_wine, aes(fsd)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of free sulfur acid in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+# variable 7: total sulfur dioxide (tsd)
+summary(red_wine$tsd)
+
+ggplot(data = red_wine, aes(tsd)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of total sulfur dioxide in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+# variable 8: density(den)
+summary(red_wine$den)
+
+ggplot(data = red_wine, aes(den)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of density of red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+# variable 9: pH
+summary(red_wine$ph)
+
+ggplot(data = red_wine, aes(ph)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of pH of red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+# variable 10: sulphates (sul)
+summary(red_wine$sul)
+
+ggplot(data = red_wine, aes(sul)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of sulphates in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+# variable 11: alcohol (alc)
+summary(red_wine$alc)
+
+ggplot(data = red_wine, aes(alc)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of alcohol in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
