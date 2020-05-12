@@ -42,69 +42,114 @@ ggplot(wine, aes(x=va, fill=type)) +geom_histogram(alpha=0.8,position = "dodge",
 ggplot(wine, aes(x=ca, fill=type)) +geom_histogram(alpha=0.8,position = "identity", bins = 15)+
   theme_minimal()+scale_fill_brewer(palette = "Set1")
 
-# variable 1: fixed acidity (fa)
+prop.table(table(wine$qual))
+
+# ------ variable 1: fixed acidity (fa) ---------
 summary(red_wine$fa)
 
-ggplot(data = red_wine, aes(fa)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of fixed acidity in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+# red wine
+ggplot(data = red_wine, aes(fa)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=15)+ labs(title = "Histogram of fixed acidity in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-qqnorm(red_wine$fa)
-qqline(red_wine$fa)
+# white wine
+ggplot(data = white_wine, aes(fa)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of fixed acidity in white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-
-# variable 2: volatile acidity (va)
+# -------- variable 2: volatile acidity (va) ---------
 summary(red_wine$va)
 
-ggplot(data = red_wine, aes(va)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of volatile acidity in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+# red wine
+ggplot(data = red_wine, aes(va)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=10)+ labs(title = "Histogram of volatile acidity in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-qqnorm(red_wine$va)
-qqline(red_wine$va)
+# white wine
+ggplot(data = white_wine, aes(va)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of volatile acidity in white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-
-# Variable 3: citric acid (ca)
+# ------- Variable 3: citric acid (ca) ----------
 summary(red_wine$ca)
 
-ggplot(data = red_wine, aes(ca)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of citric acid in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+# red wine
+ggplot(data = red_wine, aes(ca)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=30)+ labs(title = "Histogram of citric acid in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
 
-# variable 4: residual sugar (rs)
+# white wine
+ggplot(data = white_wine, aes(ca)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=30)+ labs(title = "Histogram of citric acid in white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+
+# ------ variable 4: residual sugar (rs) --------
 summary(red_wine$rs)
 
-ggplot(data = red_wine, aes(rs)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of residual sugar in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+# red wine
+ggplot(data = red_wine, aes(rs)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=15)+ labs(title = "Histogram of residual sugar in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-# variable 5: chlorides (chl)
+# white wine
+ggplot(data = white_wine, aes(rs)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of residual sugar in white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+
+# ------ variable 5: chlorides (chl) -------
 summary(red_wine$chl)
 
-ggplot(data = red_wine, aes(chl)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of citric acid in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+# red wine
+ggplot(data = red_wine, aes(chl)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=15)+ labs(title = "Histogram of chlorides in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-# variable 6: free sulfur dioxide (fsd)
+# white wine
+ggplot(data = white_wine, aes(chl)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of chlorides in white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+# ------- variable 6: free sulfur dioxide (fsd) --------
 summary(red_wine$fsd)
 
-ggplot(data = red_wine, aes(fsd)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of free sulfur acid in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+# red wine
+ggplot(data = red_wine, aes(fsd)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=15)+ labs(title = "Histogram of free sulfur acid in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-# variable 7: total sulfur dioxide (tsd)
+# white wine
+ggplot(data = white_wine, aes(fsd)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of free sulfur acid in white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+
+# ------- variable 7: total sulfur dioxide (tsd) ---------
 summary(red_wine$tsd)
 
-ggplot(data = red_wine, aes(tsd)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of total sulfur dioxide in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+# red wine
+ggplot(data = red_wine, aes(tsd)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=15)+ labs(title = "Histogram of total sulfur dioxide in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-# variable 8: density(den)
+# white wine
+ggplot(data = white_wine, aes(tsd)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of total sulfur dioxide in white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+
+# ------ variable 8: density(den) -------
 summary(red_wine$den)
 
-ggplot(data = red_wine, aes(den)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of density of red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+# red wine
+ggplot(data = red_wine, aes(den)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=15)+ labs(title = "Histogram of density of red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-# variable 9: pH
+# red wine
+ggplot(data = white_wine, aes(den)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of density of white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+
+# --------- variable 9: pH ---------
 summary(red_wine$ph)
 
-ggplot(data = red_wine, aes(ph)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of pH of red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+# red wine
+ggplot(data = red_wine, aes(ph)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=15)+ labs(title = "Histogram of pH of red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-# variable 10: sulphates (sul)
+# white wine
+ggplot(data = white_wine, aes(ph)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of pH of white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+
+# ----- variable 10: sulphates (sul) ---------
 summary(red_wine$sul)
 
-ggplot(data = red_wine, aes(sul)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of sulphates in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+#red wine
+ggplot(data = red_wine, aes(sul)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=15)+ labs(title = "Histogram of sulphates in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
 
-# variable 11: alcohol (alc)
+#white wine
+ggplot(data = white_wine, aes(sul)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of sulphates in white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+# ------ variable 11: alcohol (alc) -------
 summary(red_wine$alc)
 
-ggplot(data = red_wine, aes(alc)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=10)+ labs(title = "Histogram of alcohol in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+# red wine
+ggplot(data = red_wine, aes(alc)) + geom_histogram(col='black', fill = 'red', alpha=0.7, bins=15)+ labs(title = "Histogram of alcohol in red wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
+# white wine
+ggplot(data = white_wine, aes(alc)) + geom_histogram(col='black', fill = 'blue', alpha=0.7, bins=15)+ labs(title = "Histogram of alcohol in white wine") + theme_minimal() + theme(plot.title = element_text(hjust=0.5))
+
 
 ```
 
