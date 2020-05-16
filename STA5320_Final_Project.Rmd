@@ -197,43 +197,159 @@ h + stat_bin(breaks=seq(2,8,by=1), fill="#c8d2ff",
   theme(strip.text.y = element_text(size = 10, face = "bold"), strip.background = element_rect(fill = "#c8d2ff"))+ 
   xlab(label = "Quality")
 
+summary(red_wine)
 ```
 
-```{r}
-# computing correlation matrix for red wine
-red_wine %>% cor() -> M
-corrplot(M, method = "number")
+```{r warning=F}
+# faceted plot
+h <- ggplot(wine, aes(x=alc))
+h + stat_bin(breaks=seq(6,20,by=2), fill="#c8d2ff",
+             col="#290066", alpha=1)+
+  theme_minimal()+
+  ylab(label = "Frequency")+
+  facet_wrap(type~.) + 
+  theme(strip.text.y = element_text(size = 10, face = "bold"), strip.background = element_rect(fill = "#c8d2ff"))+ 
+  xlab(label = "Alcohol content")
 
-# computing correlation matrix for white wine
-white_wine %>% select(-type) %>% cor() -> P
-corrplot(P, method = "circle")
+```
+
+
+
+```{r}
+# CORRELATION PLOTS 
+library(corrplot)
+
+red_wine %>% 
+  ggcorr(method = c("complete.obs", "pearson"),
+                    nbreaks = 6, digits = 3, palette = "RdGy",
+                    label = T, label_size = 4, label_color = "white",
+                    label_round = 2)
+
+white_wine %>% dplyr::select( -type) %>% 
+  ggcorr(method = c("complete.obs", "pearson"),
+                    nbreaks = 6, digits = 3, palette = "RdGy",
+                    label = T, label_size = 4, label_color = "white",
+                    label_round = 2)
 ```
 
 # SECTION 2 : MLR, PCA, LASSO
 
+# MULTIPLE LINEAR REGRESSION
+
+```{r}
+# RED WINE
+mlr_1 <- lm(qual~., data = red_wine)
+summary(mlr_1)
+
+# variance inflation factor
+car::vif(mlr_1)
+
+mlr_2 <- lm(qual~. -fa, data = red_wine)
+summary(mlr_2)
+
+# checking model assumptions
+par(mfrow=c(2,2), oma = c(1,1,0,0) + 0.1, mar = c(3,3,1,1) + 0.1)
+plot(mlr_2)
+
+
+# WHITE WINE
+
+lin_white1 <- lm(qual~., data = white_wine)
+summary(lin_white1)
+
+lin_white2 <- lm(qual~. -den, data = white_wine)
+summary(lin_white2)
+
+lin_white3 <- lm(qual~. -den -ca, data = white_wine)
+summary(lin_white3)
+
+# checking model assumptions
+par(mfrow=c(2,2), oma = c(1,1,0,0) + 0.1, mar = c(3,3,1,1) + 0.1)
+plot(lin_white2)
+
+anova(lin_white2, lin_white3)
+car::vif(lin_white2)
+```
+
+
+
+# PRINCIPAL COMPONENT REGRESSION
+
+```{r}
+# --------- PCA --------------
+# Red wine
+red_wine %>% dplyr::select(-qual) %>% cbind() -> X_r
+
+# defining standardizing function
+stand <- function(x) (x-mean(x))/sd(x)
+
+# standardized data matrix
+X_rs <- apply(X_r,2,stand)
+
+# find PC loadings matrix
+pr_r <- prcomp(X_rs, scale. = T)
+
+round(pr_r$rotation[,3],2)
+# cutoff for "important" loadings
+sqrt(1/ncol(X_r))
+
+
+# scree plot
+fviz_eig(prcomp(X_rs, scale. = T))
+
+summary(prcomp(X_rs, scale. = T))
+
+pc1 <- prcomp(X_r, scale. = T)$x[,1]
+pc2 <- prcomp(X_r, scale. = T)$x[,2]
+pc3 <- prcomp(X_r, scale. = T)$x[,3]
+pc4 <- prcomp(X_r, scale. = T)$x[,4]
+pc5 <- prcomp(X_r, scale. = T)$x[,5]
+pc6 <- prcomp(X_r, scale. = T)$x[,6]
+pc7 <- prcomp(X_r, scale. = T)$x[,7]
+pc8 <- prcomp(X_r, scale. = T)$x[,8]
+pc9 <- prcomp(X_r, scale. = T)$x[,9]
+pc10 <- prcomp(X_r, scale. = T)$x[,10]
+pc11 <- prcomp(X_r, scale. = T)$x[,11]
+
+pca_lm <- lm(qual~pc1+pc2+pc3+pc4+pc5+pc6+pc7+pc8+pc9+pc10+pc11, data = red_wine)
+pca_lm2 <- lm(qual~pc1+pc2+pc3+pc4+pc5+pc6, data = red_wine)
+
+
+lmodpcr1 <- lm(red_wine$qual~pr_r$x[,1:11])
+summary(lmodpcr1)
+summary(pca_lm2)
+summary(pca_lm)
+
+list(pca_lm = broom::glance(pca_lm), pca_lm2 = broom::glance(pca_lm2))
+
+# white wine
+
+white_wine %>% dplyr::select(-qual) %>% cbind() -> X_w
+
+# defining standardizing function
+stand <- function(x) (x-mean(x))/sd(x)
+
+# standardized data matrix
+X_ws <- apply(X_w,2,stand)
+
+# find PC loadings matrix
+pr_w <- prcomp(X_ws, scale. = T)
+
+# cutoff for "important" loadings
+sqrt(1/ncol(X_w))
+
+# scree plot
+fviz_eig(prcomp(X_ws, scale. = T))
+
+summary(prcomp(X_ws, scale. = T))
+```
+
+
+
 ```{r}
 # --------- MLR -------------
-## RED WINE DATA
 
-set.seed(123)
 
-# splitting data into training and testing data in 60:40 ratio
-train.split <- createDataPartition(red_wine$qual, p=0.8)[[1]]
-
-# training data with 60% of the values
-train_red <- red_wine[train.split,]
-
-# testing dat with 40% of values
-test_red <- red_wine[-train.split,]
-
-# fitting a mlr model on training data
-model_train_red <- lm(qual~., data = train_red)
-summary(model_train_red)
-
-par(mfrow=c(2,2))
-
-# plotting residual plots
-plot(model_train_red)
 
 regfit.fwd <- regsubsets(qual~.,data = train_red, nvmax=12, method = "forward")
 summary(regfit.fwd)
@@ -272,6 +388,133 @@ lmfit <- train(qual~., data = train_red,
 # LOGISTIC REGRESSION
 
 ```{r}
+# creating "type" variable for red and white wine data
+red_wine$type <- "red"
+white_wine$type <- "white"
+
+wine <- rbind(red_wine,white_wine)
+
+wine <- mutate(wine, qual2 =ifelse(qual<6, 0, 1))
+
+# splitting training data into training and testing data in 70:30 ratio
+train.split2 <- createDataPartition(wine$qual2, p=0.7)[[1]]
+
+# training data with 70% total values
+training_wine = wine[train.split2,]
+
+# test data with 30% total values
+test_wine = wine[-train.split2,]
+
+# fitting logistic regression model
+log_model_wine <- glm(qual2~. -qual -type, data = training_wine, family = "binomial")
+
+# summary of model
+summary(log_model_wine)
+
+library(ROCR)
+library(cvAUC)
+pred_log_model <- predict(log_model_wine, test_wine, type = "response")
+pr <- prediction(pred_log_model, test_wine$qual2)
+prf0 <- performance(pr, measure = "tpr", x.measure = "fpr")
+out <- cvAUC(pred_log_model, test_wine$qual2)
+out$cvAUC
+
+
+AUC(pred_log_model, test_wine$qual2)
+
+# second logistic regression model
+log_mod2 <- glm(qual2~ va +rs+fsd*tsd+sul+alc+ph+den*alc, data = training_wine, family = "binomial")
+pred_log2 <- predict(log_mod2, test_wine, type = "response")
+pr1 <- prediction(pred_log2, test_wine$qual2)
+prf1 <- performance(pr1, measure = "tpr", x.measure = "fpr")
+out1 <- cvAUC(pred_log2, test_wine$qual2)
+out1$cvAUC
+
+log_mod3 <- glm(qual2~. -type -qual -chl -den , data = training_wine, family = "binomial")
+pred_log3 <- predict(log_mod3, test_wine, type = "response")
+
+AUC(pred_log3, test_wine$qual2)
+AUC(pred_log2, test_wine$qual2)
+
+
+
+
+library(e1071)
+confusionMatrix(
+  factor(test_wine$qual2, levels = 0:1),
+  factor(predictedy_hat_wine, levels = 0:1)
+)
+
+
+
+
+```
+
+# RANDOM FOREST
+
+```{r}
+library(randomForest)
+forest <- randomForest:: randomForest(as.factor(qual2)~. -type -qual, data=training_wine, ntree = 250, mtry=3, importance = TRUE)
+
+pred_forest <- predict(forest, test_wine, "prob")
+#output <- pred_forest[,2]
+#pr2 <- prediction(output, test_wine$qual2)
+#prf2 <- performance(pr2, measure = "tpr", x.measure = "fpr")
+
+#auc2 <- performance(pr2, measure = "auc")
+#auc2 <- auc2@y.values[[1]]
+#auc2
+
+AUC(as.numeric(pred_forest), test_wine$qual2)
+```
+
+# XGBOOST
+
+```{r}
+library(gbm)
+set.seed(1)
+boost <- gbm(qual2~. -type -qual, data = training_wine,
+             distribution = "bernoulli",
+             n.trees = 5000, shrinkage = 0.2,
+             interaction.depth = 4)
+boost_pred <- predict(boost, test_wine[-12:-13], n.trees = 5000)
+
+
+#pr4 <- prediction(boost_pred, test_wine$qual2)
+#prf4 <- performance(pr, measure = "tpr", x.measure = "fpr")
+
+#auc4 <- performance(pr4, measure = "auc")
+#auc4 <- auc4@y.values[[1]]
+#auc4
+
+AUC(boost_pred, test_wine$qual2)
+
+
+## PLOTTING ROC CURVES
+#plot(prf1, main="ROC Curves") # Logistic Regression (BLACK)
+#plot(prf2, add = T, col=2) # RF (RED)
+#plot(prf4, add = T, col = 3) # Boosting (GREEN)
+#abline(0,1)
+#legend(0.66, 0.4, legend = c("Logistic Regression", "Random Forest", "Boosting"), col #= c("Black", "Red", "Green"), lty = 1, cex=0.8, title= "Models")
+
+
+
+
+
+rf_mod <- randomForest::randomForest(as.factor(qual2)~. -type - qual, data = training_wine, ntree=250, importance = T)
+
+rf_pred <- predict(rf_mod, test_wine)
+
+AUC(as.numeric(rf_pred), test_wine$qual2)
+
+mean((as.numeric(rf_pred)-test_wine$qual2)^2)
+mean((boost_pred-test_wine$qual2)^2)
+```
+
+
+
+
+```{r}
 library(leaps)
 fit1 <- lm(qual~., data = red_wine)
 summary(fit1)
@@ -282,45 +525,8 @@ summary(fit1);summary(fit2)
 list(fit1 = broom::glance(fit1), fit2 = broom::glance(fit2))
 
 test_set %>% gather_predictions(fit1, fit2) %>% group_by(model) %>% summarise(MSE=mean(qual-pred)^2)
-# --------- PCA --------------
-red_wine %>% select(-qual) %>% cbind() -> X_r
 
-# defining standardizing function
-stand <- function(x) (x-mean(x))/sd(x)
 
-# standardized data matrix
-X_rs <- apply(X_r,2,stand)
-
-# find PC loadings matrix
-prcomp(X_rs, scale. = T)
-
-# cutoff for "important" loadings
-sqrt(1/ncol(X_r))
-
-# scree plot
-fviz_eig(prcomp(X_rs, scale. = T))
-
-summary(prcomp(X_rs, scale. = T))
-
-pc1 <- prcomp(X_r, scale. = T)$x[,1]
-pc2 <- prcomp(X_r, scale. = T)$x[,2]
-pc3 <- prcomp(X_r, scale. = T)$x[,3]
-pc4 <- prcomp(X_r, scale. = T)$x[,4]
-pc5 <- prcomp(X_r, scale. = T)$x[,5]
-pc6 <- prcomp(X_r, scale. = T)$x[,6]
-pc7 <- prcomp(X_r, scale. = T)$x[,7]
-pc8 <- prcomp(X_r, scale. = T)$x[,8]
-pc9 <- prcomp(X_r, scale. = T)$x[,9]
-pc10 <- prcomp(X_r, scale. = T)$x[,10]
-pc11 <- prcomp(X_r, scale. = T)$x[,11]
-
-pca_lm <- lm(qual~pc1+pc2+pc3+pc4+pc5+pc6+pc7+pc8+pc9+pc10+pc11, data = red_wine)
-pca_lm2 <- lm(qual~pc1+pc2+pc3+pc4+pc5+pc6, data = red_wine)
-
-summary(pca_lm2)
-summary(pca_lm)
-
-list(pca_lm = broom::glance(pca_lm), pca_lm2 = broom::glance(pca_lm2))
 ```
 
 # SECTION 2 CONTINUED
